@@ -1,0 +1,44 @@
+version: '3.8'
+
+
+# docker run -d --name triton \
+#   --gpus all \
+#   -p 7000:7000 -p 7001:7001 -p 7002:7002 \
+#   -v ./triton/models:/models \
+#   --restart always \
+#   nvcr.io/nvidia/tritonserver:24.09-py3 \
+#   tritonserver --model-store=/models
+
+services:
+  # Тритон для инференса моделей
+  triton:
+    container_name: triton
+    image: nvcr.io/nvidia/tritonserver:24.09-py3
+    ports:
+      - 8000:8000  # HTTP endpoint for inference
+      - 8001:8001  # GRPC endpoint for inference
+      - 8002:8002  # Metrics endpoint for Prometheus
+    restart: always
+    volumes:
+      - ./triton/models:/models
+    command: ["tritonserver", "--model-store=/models"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+              count: 1
+
+  # # Контейнер для конвертации модели в trt из onnx
+  # trtexec_container:
+  #   container_name: trtexec_container
+  #   image: nvcr.io/nvidia/tensorrt:24.09-py3
+  #   volumes:
+  #     - ./trtexec_workspace:/workspace
+  #   command: ["tail", "-f", "/dev/null"]
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - capabilities: [gpu]
+  #             count: 1
