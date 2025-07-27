@@ -1,2 +1,5 @@
 *.csv
 *__pycache__
+*.pth
+*.joblib
+.env
