@@ -4,3 +4,4 @@
 *.joblib
 .env
 .onnx
+src/app/match_items/triton/models/bert/1/model.onnx
