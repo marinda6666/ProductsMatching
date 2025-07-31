@@ -1,0 +1,9 @@
+transformers
+asyncio
+grpcio
+requests
+fastapi
+uvicorn
+jinja2
+python-multipart
+tritonclient[all]

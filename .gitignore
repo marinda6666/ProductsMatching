@@ -2,6 +2,7 @@
 *__pycache__
 *.pth
 *.joblib
-.env
-.onnx
-src/app/match_items/triton/models/bert/1/model.onnx
+*.env
+.idea
+.venv
+*.onnx

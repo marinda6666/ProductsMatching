@@ -8,36 +8,35 @@ from tritonclient.utils import triton_to_np_dtype
 from transformers import BertTokenizer
 
 class InferenceModule:
+    """
+    Module for establish triton connection
+    """
     def __init__(self) -> None:
-        """Initialize."""
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         self.max_length = 128
         self.url = os.environ.get("TRITON_SERVER_URL", "localhost:7001")
         self.triton_client = grpcclient.InferenceServerClient(url=self.url)
         self.device = 'cpu'
 
-    async def infer_text(  # Добавлено async
+    async def infer_text(  
         self,
         text1: str,
         text2: str,
         model_name: str = "bert",
     ) -> dict:
         """
-        Perform inference on the input texts using BERT model.
+        Perform inference on the input texts using model.
         """
         model_meta, model_config = self.parse_model_metadata(model_name)
         
-        # Получите информацию о входах модели
         input_ids_meta = next(inp for inp in model_meta.inputs if inp.name == "input_ids")
         attention_mask_meta = next(inp for inp in model_meta.inputs if inp.name == "attention_mask")
         token_type_ids_meta = next(inp for inp in model_meta.inputs if inp.name == "token_type_ids")
         
         max_length = input_ids_meta.shape[1]
         
-        # Предобработка текстов
         tokenized_data = self.preprocess_text(text1, text2)
         
-        # Создайте входные тензоры
         inputs = [
             grpcclient.InferInput(
                 input_ids_meta.name, 
@@ -56,7 +55,6 @@ class InferenceModule:
             )
         ]
         
-        # Установите данные
         inputs[0].set_data_from_numpy(
             tokenized_data['input_ids'].astype(triton_to_np_dtype(input_ids_meta.datatype))
         )
@@ -67,24 +65,19 @@ class InferenceModule:
             tokenized_data['token_type_ids'].astype(triton_to_np_dtype(token_type_ids_meta.datatype))
         )
         
-        # Выходной тензор
         outputs = [grpcclient.InferRequestedOutput(model_meta.outputs[0].name)]
         
-        # Выполните инференс с await
         results = await self.triton_client.infer(
             model_name=model_name,
             inputs=inputs,
             outputs=outputs,
         )
         
-        # Обработайте выход
         output = results.as_numpy(model_meta.outputs[0].name)[0]
-        print(output)
         
         cls_idx = np.argmax(output)
         cls_logit = output[cls_idx]
         
-        # Вычислите вероятности через softmax
         probabilities = np.exp(output) / np.sum(np.exp(output))
         
         return {
@@ -94,7 +87,6 @@ class InferenceModule:
             "all_probabilities": probabilities.tolist()
         }
 
-    # Остальные методы остаются без изменений
     def parse_model_metadata(self, model_name: str) -> object:
         """Parse metadata and configuration of the model."""
         channel = grpc.insecure_channel(self.url)

@@ -10,13 +10,11 @@ import logging as log
 MAX_LENGTH = 128
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# MODELS FILES
-"""
-/home/dmitrij/Документы/ml_projects/ProductsMatching/models/checkpoints/bert_19.07_12:42.pth
-/home/dmitrij/Документы/ml_projects/ProductsMatching/models/checkpoints/bert_20.07_13:15.pth
-"""
-BERT = Path('/home/dmitrij/Документы/ml_projects/ProductsMatching/models/checkpoints/bert_20.07_13:15.pth')
+BERT = Path('/home/marinda/Документы/ml_projects/ProductsMatching/models/checkpoints/bert_20.07_13:15.pth')
+
+
 class MatchingModel(ABC):
+    """Abstract class matching model"""
     @abstractmethod
     def __init__(self,
                  checkpoint: str,
@@ -25,10 +23,12 @@ class MatchingModel(ABC):
     
     @abstractmethod
     def _load_model(self, checkpoint) -> Any:
+        """Loading model"""
         pass
 
     @abstractmethod
     def get_similarity_probs(self, text1, text2, max_length=MAX_LENGTH) -> np.ndarray:
+        """Get similarity between two words"""
         pass
 
 class Bert(MatchingModel):

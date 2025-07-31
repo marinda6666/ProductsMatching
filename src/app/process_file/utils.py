@@ -1,10 +1,8 @@
-import torch
 import numpy as np
 import pandas as pd
 from typing import List, Any
 import logging as log
 import os
-import sys
 from dotenv import load_dotenv
 import requests
 
@@ -27,13 +25,13 @@ def calculate_item_stats(query: str, items: List[str|int]):
     print(f'For {query}:')
     ind = 0
     for name, price in items:
-        url = "http://127.0.0.1:8090/predict/"
+        url = f'http://nginx:8080/predict/?text1={query}&text2={name}'
         params = {
-            "text1": query,
-            "text2": name
+            'text1': query,
+            'text2': name
         }
 
-        response = requests.post(url, params=params)
+        response = requests.get(url)
         prob = response.json()[1]
         if prob >= THRESHOLD:
             print(f'{ind}. {name} - {price} ({prob:.4f})')
