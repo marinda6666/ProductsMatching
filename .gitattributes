@@ -1,0 +1,4 @@
+# Отслеживать все модели ONNX
+*.onnx filter=lfs diff=lfs merge=lfs -text
+# Отслеживать все крупные CSV-файлы
+*.csv  filter=lfs diff=lfs merge=lfs -text
