@@ -1,19 +1,17 @@
 from fastapi import FastAPI, File, UploadFile, Query
 import asyncio
 from fastapi import HTTPException
-from triton_inference import InferenceModule 
+from triton_inference import InferenceModule
 
 THRESHOLD = 0.7
 
 app = FastAPI()
 
-inference_module = InferenceModule()  
+inference_module = InferenceModule()
+
 
 @app.get("/predict/")
-async def predict(
-    text1: str,
-    text2: str
-):
+async def predict(text1: str, text2: str):
     try:
 
         result = await inference_module.infer_text(text1, text2)
