@@ -24,6 +24,9 @@ I used the eBay Developer API for finding items and then compared every product 
 
   
 **🚀 Run**
+
+for running service you need get EBay Api token - https://developer.ebay.com/my/api_test_tool?index=0&env=production
+
 ```
 cd src
 docker-compose build && docker-compose up -d
