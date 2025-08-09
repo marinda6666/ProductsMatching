@@ -1,66 +1,114 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Загрузка CSV файла</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upload CSV File - eBay Price Statistics</title>
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
         body {
-            background-color: #f8f9fa;
-            padding-top: 2rem;
+            background-color: #f0f2f5;
+            padding-top: 3rem;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         }
         .upload-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 2.5rem 3rem;
+            background: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 8px 25px rgb(0 0 0 / 0.1);
         }
-        .file-upload {
+        .logo-container {
+            text-align: center;
             margin-bottom: 2rem;
         }
-        .table-container {
-            margin-top: 2rem;
-            overflow-x: auto;
+        .logo-container img {
+            max-height: 120px;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        h2 {
-            color: #0d6efd;
+        .image-caption {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-style: italic;
             margin-bottom: 1.5rem;
         }
-        .custom-file-upload {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            background-color: #0d6efd;
-            color: white;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+        h2 {
+            color: #0056b3;
+            font-weight: 700;
+            margin-bottom: 1.75rem;
+            text-align: center;
         }
-        .custom-file-upload:hover {
-            background-color: #0b5ed7;
+        label.form-label {
+            font-weight: 600;
+            color: #333;
         }
         .btn-upload {
-            padding: 0.5rem 2rem;
+            background-color: #0056b3;
+            border: none;
+            font-weight: 600;
+            padding: 0.75rem 0;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+        }
+        .btn-upload:hover {
+            background-color: #003d80;
         }
         .error-message {
-            margin-top: 1rem;
+            margin-top: 1.25rem;
+            font-weight: 600;
+        }
+        .table-container {
+            margin-top: 2.5rem;
+        }
+        h3 {
+            color: #003d80;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .table thead {
+            background-color: #cfe2ff;
+        }
+        .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: #e7f1ff;
+        }
+        /* Responsive tweaks */
+        @media (max-width: 575.98px) {
+            .upload-container {
+                padding: 1.5rem 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container upload-container">
-        <h2 class="text-center">Загрузить CSV файл</h2>
-        
+        <!-- Изображение с подписью -->
+        <!-- <div class="logo-container">
+            <img src="/static/table.png" alt="CSV Table Example" class="img-fluid" />   
+        </div> -->
+
+        <h2>Compare Your Products with eBay Prices</h2>
+        <p class="text-center mb-4 text-secondary">
+            Upload your CSV file containing products and their prices (your table should include columns named <code>product_name</code> and <code>price</code>), and receive detailed statistics including average, minimum, and maximum prices from eBay listings.
+        </p>
+
         <form method="post" enctype="multipart/form-data" class="file-upload">
-            <div class="mb-3">
-                <label for="formFile" class="form-label">Выберите CSV файл</label>
-                <input class="form-control" type="file" name="file" id="formFile" accept=".csv" required>
+            <div class="mb-4">
+                <label for="formFile" class="form-label">Choose your CSV file:</label>
+                <input
+                    class="form-control"
+                    type="file"
+                    name="file"
+                    id="formFile"
+                    accept=".csv"
+                    required
+                />
             </div>
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary btn-upload">Загрузить</button>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-upload">Get Price Statistics</button>
             </div>
         </form>
 
@@ -71,29 +119,29 @@
         {% endif %}
 
         {% if table %}
-        <div class="table-container">
-            <h3 class="mb-3">Содержимое файла:</h3>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover">
-                    <thead class="table-primary">
-                        <tr>
-                            {% for col in columns %}
-                                <th>{{ col }}</th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in table %}
+            <div class="table-container">
+                <h3>eBay Price Statistics</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
                             <tr>
-                                {% for cell in row %}
-                                    <td>{{ cell }}</td>
+                                {% for col in columns %}
+                                    <th>{{ col }}</th>
                                 {% endfor %}
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for row in table %}
+                                <tr>
+                                    {% for cell in row %}
+                                        <td>{{ cell }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
         {% endif %}
     </div>
 

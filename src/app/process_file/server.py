@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, UploadFile, File
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles 
 from fastapi.responses import HTMLResponse
 import pandas as pd
 from io import BytesIO
@@ -8,7 +9,6 @@ from utils import process_table
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-
 
 @app.get("/", response_class=HTMLResponse)
 @app.get("/upload-csv", response_class=HTMLResponse)
